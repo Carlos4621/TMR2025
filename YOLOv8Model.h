@@ -34,8 +34,6 @@ namespace My {
         /// @param params Paquete de parámetros del inferenciador
         explicit YOLOv8Model(const YOLOv8ModelParams& params);
 
-        YOLOv8Model() = default;
-
         YOLOv8Model(const YOLOv8Model&) = default;
         YOLOv8Model(YOLOv8Model&&) noexcept = default;
 
@@ -52,10 +50,6 @@ namespace My {
         /// @return Vector con los datos de las predicciones
         [[nodiscard]] std::vector<PredictionsData> getPredictions(const cv::Mat& inputImage, const double& modelConfidenceThreshold = 0.25f,
             const double& modelScoreThreshold = 0.45f, const double& modelNMSThreshold = 0.5f);
-
-        /// @brief Coloca nuevos parámetros para el modelo
-        /// @param params Parámetros para el nuevo modelo
-        void setParams(const YOLOv8ModelParams& params) noexcept;
 
     private:
 

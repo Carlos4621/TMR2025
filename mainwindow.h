@@ -6,7 +6,11 @@
 #include <QTimer>
 #include <QLabel>
 #include <opencv4/opencv2/opencv.hpp>
-#include "VideoLabel.h"
+#include "VoiceDisplayer.h"
+#include "BufferVoiceRecorder.h"
+#include <QtMultimedia>
+#include "VideoRecoWidget.h"
+#include "VoiceRecoWidget.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -22,12 +26,12 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    void updateVid();
-
 private:
     Ui::MainWindow *ui;
 
+    My::VoiceRecoWidget* reco;
 
+    My::RecoWidget* vid;
 
     QTimer* timer;
 };

@@ -4,26 +4,31 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
-    , timer{new QTimer}
-{
-    connect(timer, &QTimer::timeout, this, &MainWindow::updateVid);
+    , timer{new QTimer{this}}
+{   //"/home/carlos4621/whisper.cpp/models/ggml-base.en.bin"
+
     ui->setupUi(this);
-    timer->setInterval(33);
-    timer->start();
 
-    const My::YOLOv8ModelParams modelParams{ "/home/carlos4621/TMR/hazmatModel.onnx", cv::Size{ 640, 640 }, "/home/carlos4621/TMR/hazmatClasses.txt", true };
+    const std::string modelPath{ "/home/carlos4621/whisper.cpp/models/ggml-base.en.bin" };
 
-    ui->videoFrente->setModelParams(modelParams);
-    ui->videoFrente->setCameraID(0);
+    const QAudioDevice audioDevice{ QMediaDevices::defaultAudioInput() };
+    QAudioFormat format;
+    format.setSampleRate(WHISPER_SAMPLE_RATE);
+    format.setChannelCount(1);
+    format.setSampleFormat(QAudioFormat::Float);
 
-    ui->videoArriba->setModelParams(modelParams);
+    reco = new My::VoiceRecoWidget{audioDevice, format, modelPath, this};
+
+    reco->setGeometry(0, 0, 500, 500);
+
+    const My::YOLOv8ModelParams modelParams{ "/home/carlos4621/TMR2025/hazmatModel.onnx", cv::Size{640, 640}, "/home/carlos4621/TMR2025/hazmatClasses.txt", false };
+
+    vid = new My::RecoWidget{0, modelParams, 60, this};
+
+    vid->setGeometry(600, 600, 700, 600);
 }
 
 MainWindow::~MainWindow() {
     delete ui;
-}
-
-void MainWindow::updateVid() {
-    ui->videoFrente->updateVideo();
 }
 

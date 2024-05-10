@@ -1,11 +1,13 @@
 #include "YOLOv8Model.h"
 
-My::YOLOv8Model::YOLOv8Model(std::string_view modelPath, const cv::Size& modelInputSize, std::string_view classesTxtPath, const bool& cudaEnabled) :
-    YOLOv8Model{ YOLOv8ModelParams{modelPath.data(), modelInputSize, classesTxtPath.data(), cudaEnabled} } {
+My::YOLOv8Model::YOLOv8Model(std::string_view modelPath, const cv::Size& modelInputSize, std::string_view classesTxtPath, const bool& cudaEnabled)
+    : modelInputSize_m{modelInputSize} {
+
+    loadOnnxNetwork(modelPath, cudaEnabled);
+    loadClasses(classesTxtPath);
 }
 
-My::YOLOv8Model::YOLOv8Model(const YOLOv8ModelParams &params) {
-    this->setParams(params);
+My::YOLOv8Model::YOLOv8Model(const YOLOv8ModelParams &params) : YOLOv8Model{ params.modelPath, params.modelInputSize, params.classNamesPath, params.runWithCUDA } {
 }
 
 std::vector<My::PredictionsData> My::YOLOv8Model::getPredictions(const cv::Mat &inputImage, const double& modelConfidenceThreshold, const double& modelScoreThreshold,
@@ -75,13 +77,6 @@ std::vector<My::PredictionsData> My::YOLOv8Model::getPredictions(const cv::Mat &
     }
     
     return inferences;
-}
-
-void My::YOLOv8Model::setParams(const YOLOv8ModelParams &params) noexcept {
-    modelInputSize_m = params.modelInputSize;
-
-    loadOnnxNetwork(params.modelPath, params.runWithCUDA);
-    loadClasses(params.classNamesPath);
 }
 
 void My::YOLOv8Model::loadClasses(std::string_view path) {

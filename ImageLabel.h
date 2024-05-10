@@ -10,7 +10,7 @@
 namespace My {
 
 /// @brief Label que permite la colocación de imagenes cv::Mat
-class VideoLabel : public QWidget {
+class VideoLabel : public QLabel {
     Q_OBJECT
 public:
 
@@ -21,10 +21,6 @@ public:
     /// @brief Coloca una imagen en el label
     /// @param image Imagen a colocar
     void setImage(const cv::Mat& image);
-
-private:
-    QLabel* label_m;
-
 };
 
 } // namespace My
