@@ -1,8 +1,8 @@
-#include "BufferVoiceRecorder.h"
+#include "VoiceRecorder.h"
 
 namespace My {
 
-BufferVoiceRecorder::BufferVoiceRecorder(const QAudioDevice &device, const QAudioFormat &format, QObject *parent)
+VoiceRecorder::VoiceRecorder(const QAudioDevice &device, const QAudioFormat &format, QObject *parent)
     : QObject{parent} {
 
     if (!device.isFormatSupported(format)) {
@@ -12,7 +12,7 @@ BufferVoiceRecorder::BufferVoiceRecorder(const QAudioDevice &device, const QAudi
     source_m = new QAudioSource{ device, format };
 }
 
-void BufferVoiceRecorder::start() {
+void VoiceRecorder::start() {
     if (isRecording) {
         return;
     }
@@ -22,9 +22,11 @@ void BufferVoiceRecorder::start() {
     source_m->start(&buffer_m);
 
     isRecording = true;
+
+    emit recordingStarted();
 }
 
-void BufferVoiceRecorder::stop() {
+void VoiceRecorder::stop() {
     if (!isRecording) {
         return;
     }
@@ -33,9 +35,11 @@ void BufferVoiceRecorder::stop() {
     source_m->stop();
 
     isRecording = false;
+
+    emit recordingStopped();
 }
 
-const QBuffer& BufferVoiceRecorder::getBuffer() const noexcept {
+const QBuffer& VoiceRecorder::getBuffer() const noexcept {
     return buffer_m;
 }
 

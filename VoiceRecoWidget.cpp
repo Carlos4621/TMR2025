@@ -6,25 +6,40 @@ VoiceRecoWidget::VoiceRecoWidget(const QAudioDevice &device, const QAudioFormat 
     : QWidget{parent}
     , recordButton_m{ new QPushButton{tr("Record"), this} }
     , stopButton_m{ new QPushButton{tr("Stop") ,this} }
-    , voiceLabel_m{ new My::VoiceLabel{voiceModelPath, this} }
-    , voiceRecorder_m{ new My::BufferVoiceRecorder{device, format, this} }
+    , voiceLabel_m{ new My::VoiceDisplayer{voiceModelPath, this} }
+    , voiceRecorder_m{ new My::VoiceRecorder{device, format, this} }
 {
     connect(recordButton_m, &QPushButton::pressed, this, &VoiceRecoWidget::onRecordPressed);
     connect(stopButton_m, &QPushButton::pressed, this, &VoiceRecoWidget::onStopPressed);
+    connect(voiceLabel_m, &VoiceDisplayer::trasnscriptionDisplayed, this, &VoiceRecoWidget::onTransciptionDisplayed);
+
+    stopButton_m->setEnabled(false);
 
     setupLayout();
 }
 
 void VoiceRecoWidget::onRecordPressed() {
+    recordButton_m->setEnabled(false);
+    stopButton_m->setEnabled(true);
+
     voiceLabel_m->clear();
 
     voiceRecorder_m->start();
 }
 
 void VoiceRecoWidget::onStopPressed() {
+    stopButton_m->setEnabled(false);
+
     voiceRecorder_m->stop();
 
-    voiceLabel_m->transcribeAudio(voiceRecorder_m->getBuffer());
+    emit voiceLabel_m->transcribeAudio(voiceRecorder_m->getBuffer().buffer());
+
+    // Implementar algún tipo de marcador de cargado
+}
+
+void VoiceRecoWidget::onTransciptionDisplayed() {
+    recordButton_m->setEnabled(true);
+    // Implementar algún tipo de marcador de cargado
 }
 
 void VoiceRecoWidget::setupLayout() {

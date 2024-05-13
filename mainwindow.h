@@ -7,7 +7,7 @@
 #include <QLabel>
 #include <opencv4/opencv2/opencv.hpp>
 #include "VoiceDisplayer.h"
-#include "BufferVoiceRecorder.h"
+#include "VoiceRecorder.h"
 #include <QtMultimedia>
 #include "VideoRecoWidget.h"
 #include "VoiceRecoWidget.h"

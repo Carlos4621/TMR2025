@@ -8,7 +8,8 @@
 #include <QPushButton>
 #include <QGridLayout>
 #include "VoiceDisplayer.h"
-#include "BufferVoiceRecorder.h"
+#include "VoiceRecorder.h"
+#include <QtConcurrent>
 
 namespace My {
 
@@ -28,11 +29,12 @@ private slots:
 
     void onRecordPressed();
     void onStopPressed();
+    void onTransciptionDisplayed();
 
 private:
 
-    My::VoiceLabel* voiceLabel_m;
-    My::BufferVoiceRecorder* voiceRecorder_m;
+    My::VoiceDisplayer* voiceLabel_m;
+    My::VoiceRecorder* voiceRecorder_m;
 
     QPushButton* recordButton_m;
     QPushButton* stopButton_m;

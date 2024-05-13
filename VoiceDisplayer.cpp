@@ -2,18 +2,21 @@
 
 namespace My {
 
-VoiceLabel::VoiceLabel(std::string_view modelPath ,QWidget *parent)
+VoiceDisplayer::VoiceDisplayer(std::string_view modelPath, QWidget *parent)
     : QTextEdit{parent}
-    , stt_m{modelPath}
+    , stt_m{ new My::Susurrador{ modelPath } }
 {
+    stt_m->moveToThread(&workerThread_m);
+
+    connect(&workerThread_m, &QThread::finished, stt_m, &QObject::deleteLater);
+    connect(this, &VoiceDisplayer::transcribeAudio, stt_m, &Susurrador::manageAudio);
+    connect(stt_m, &Susurrador::resultReady, this, &VoiceDisplayer::setText);
+    connect(stt_m, &Susurrador::resultReady, this, &VoiceDisplayer::trasnscriptionDisplayed);
+
+    workerThread_m.start();
+
     setReadOnly(true);
     setFocusPolicy(Qt::NoFocus);
-}
-
-void VoiceLabel::transcribeAudio(const QBuffer &buffer) {
-    const auto text{ stt_m.manageAudio(buffer) };
-
-    setText(text.c_str());
 }
 
 } // namespace My

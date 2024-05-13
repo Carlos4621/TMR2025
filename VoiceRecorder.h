@@ -8,7 +8,7 @@
 namespace My {
 
 /// @brief Clase que permite grabar audio en forma de QByteArray para su posterior procesamiento
-class BufferVoiceRecorder : public QObject {
+class VoiceRecorder : public QObject {
     Q_OBJECT
 public:
 
@@ -16,7 +16,7 @@ public:
     /// @param device Dispositivo por el cual se grabará el audio
     /// @param format Formato en el que se registrará el audio
     /// @param parent Padre del widget
-    BufferVoiceRecorder(const QAudioDevice& device, const QAudioFormat& format, QObject *parent = nullptr);
+    VoiceRecorder(const QAudioDevice& device, const QAudioFormat& format, QObject *parent = nullptr);
 
     /// @brief Obtiene el buffer del audio grabado, debe estar detenida la grabación para su correcto uso
     /// @return Buffer con los datos del audio
@@ -29,6 +29,11 @@ public slots:
 
     /// @brief Termina la grabación del audio
     void stop();
+
+signals:
+
+    void recordingStarted();
+    void recordingStopped();
 
 private:
 
