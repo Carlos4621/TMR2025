@@ -3,8 +3,8 @@
 namespace My {
 
 VoiceRecorder::VoiceRecorder(const QAudioDevice &device, const QAudioFormat &format, QObject *parent)
-    : QObject{parent} {
-
+    : QObject{ parent }
+{
     if (!device.isFormatSupported(format)) {
         throw std::runtime_error{ "Format not supported in the device selected" };
     }

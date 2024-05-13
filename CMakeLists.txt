@@ -33,7 +33,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         VideoRecoWidget.h VideoRecoWidget.cpp
         Susurrador.h Susurrador.cpp
         VoiceRecoWidget.h VoiceRecoWidget.cpp
-        VoiceDisplayer.h VoiceDisplayer.cpp
+
         VoiceRecorder.h VoiceRecorder.cpp
 
     )

@@ -15,21 +15,16 @@ public:
 
     /// @brief Constructor base
     /// @param modelPath Path del modelo a usar
-    explicit Susurrador(std::string_view modelPath);
+    explicit Susurrador(std::string_view modelPath, QObject* parent = nullptr);
 
     virtual ~Susurrador() noexcept;
 
 public slots:
 
-    /// @brief Transcribe el texto enviado desde un QByteArray, lanza resultReady() al finalizar
+    /// @brief Transcribe el texto enviado desde un QByteArray
     /// @param buffer Audio a transcribir
-    void manageAudio(const QByteArray& buffer);
+    QString voiceToString(const QByteArray& buffer);
 
-signals:
-
-    /// @brief Señal lanzada al finalizar manageAudio()
-    /// @param result Resultado de la transcripción
-    void resultReady(const QString& result);
 
 private:
 

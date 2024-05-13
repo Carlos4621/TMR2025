@@ -7,9 +7,9 @@
 #include <QTextEdit>
 #include <QPushButton>
 #include <QGridLayout>
-#include "VoiceDisplayer.h"
 #include "VoiceRecorder.h"
 #include <QtConcurrent>
+#include "Susurrador.h"
 
 namespace My {
 
@@ -29,15 +29,20 @@ private slots:
 
     void onRecordPressed();
     void onStopPressed();
-    void onTransciptionDisplayed();
+    void onAsyncFinish();
 
 private:
 
-    My::VoiceDisplayer* voiceLabel_m;
-    My::VoiceRecorder* voiceRecorder_m;
+    QTextEdit* textEdit_m{ nullptr };
 
-    QPushButton* recordButton_m;
-    QPushButton* stopButton_m;
+    Susurrador* susurrador_m{ nullptr };
+
+    My::VoiceRecorder* voiceRecorder_m{ nullptr };
+
+    QPushButton* recordButton_m{ nullptr };
+    QPushButton* stopButton_m{ nullptr };
+
+    QFutureWatcher<QString> transcription_m;
 
     void setupLayout();
 };
