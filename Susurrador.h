@@ -19,12 +19,9 @@ public:
 
     virtual ~Susurrador() noexcept;
 
-public slots:
-
     /// @brief Transcribe el texto enviado desde un QByteArray
     /// @param buffer Audio a transcribir
     QString voiceToString(const QByteArray& buffer);
-
 
 private:
 

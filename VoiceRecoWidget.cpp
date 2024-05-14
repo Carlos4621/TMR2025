@@ -3,7 +3,7 @@
 namespace My {
 
 VoiceRecoWidget::VoiceRecoWidget(const QAudioDevice &device, const QAudioFormat &format, std::string_view voiceModelPath, QWidget *parent)
-    : QWidget{parent}
+    : QWidget{ parent }
     , recordButton_m{ new QPushButton{tr("Record"), this} }
     , stopButton_m{ new QPushButton{tr("Stop"), this} }
     , voiceRecorder_m{ new My::VoiceRecorder{device, format, this} }
