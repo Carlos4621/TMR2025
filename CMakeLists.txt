@@ -24,9 +24,6 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(TMR
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
-        ImageLabel.h ImageLabel.cpp
-        QRDisplayer.h QRDisplayer.cpp
-        YOLOv8Displayer.h YOLOv8Displayer.cpp
         YOLOv8Model.h
         YOLOv8Model.cpp
         PredictionsData.h

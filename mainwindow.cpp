@@ -25,7 +25,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     vid = new My::RecoWidget{0, modelParams, 60, this};
 
-    vid->setGeometry(600, 600, 700, 600);
+    vid->setGeometry(200, 200, 700, 600);
 }
 
 MainWindow::~MainWindow() {

@@ -3,11 +3,12 @@
 #define RECOWIDGET_H
 
 #include <QWidget>
-#include "QRDisplayer.h"
-#include "YOLOv8Displayer.h"
+#include "YOLOv8Model.h"
 #include <QCheckBox>
-#include "ImageLabel.h"
 #include <QTimer>
+#include <QLabel>
+#include <QTextEdit>
+#include <QGridLayout>
 
 namespace My {
 
@@ -25,22 +26,30 @@ public:
 
 private slots:
 
-    void updateVideo();
+    void onNextFrame();
 
 private:
-    VideoLabel* videoLabel_m;
 
-    QRDisplayer* QRDisplayer_m;
-    YOLOv8Displayer* hazmatDisplayer_m;
+    QLabel* videoLabel_m{ nullptr };
 
-    QCheckBox* QRCheck_m;
-    QCheckBox* hazmatCheck_m;
+    QTextEdit* QRTextEdit_m{ nullptr };
+    cv::QRCodeDetector QRCodeDetector_m;
 
-    QTimer* timer_m;
+    QTextEdit* modelTextEdit_m{ nullptr };
+    YOLOv8Model model_m;
+
+    QCheckBox* QRCheck_m{ nullptr };
+    QCheckBox* hazmatCheck_m{ nullptr };
+
+    QTimer* timer_m{ nullptr };
 
     cv::VideoCapture camera_m;
 
     void setupLayout();
+
+    QPixmap matToPixmap(const cv::Mat&);
+
+    void displayPredictions(const cv::Mat &frame);
 };
 
 } // namespace My
