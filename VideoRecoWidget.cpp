@@ -12,12 +12,14 @@ RecoWidget::RecoWidget(const uint8_t& cameraID, const YOLOv8ModelParams &modelPa
     , hazmatCheck_m{ new QCheckBox{ tr("Enable Hazmat"), this} }
     , timer_m{ new QTimer{this} }
     , camera_m{ cameraID }
+    , predictionsFuture_m{ new QFutureWatcher<std::vector<PredictionsData>>{this} }
+    , QRFuture_m{ new QFutureWatcher<std::string>{this} }
 {
     timer_m->setInterval(1000 / maxFPS);
 
     connect(timer_m, &QTimer::timeout, this, &RecoWidget::onNextFrame);
-    connect(&predictionsFuture_m, &QFutureWatcher<std::vector<PredictionsData>>::finished, this, &RecoWidget::onModelPredictionFinished);
-    connect(&QRFuture_m, &QFutureWatcher<std::string>::finished, this, &RecoWidget::onQRDetectionFinished);
+    connect(predictionsFuture_m, &QFutureWatcher<std::vector<PredictionsData>>::finished, this, &RecoWidget::onModelPredictionFinished);
+    connect(QRFuture_m, &QFutureWatcher<std::string>::finished, this, &RecoWidget::onQRDetectionFinished);
 
     setupLayout();
 
@@ -41,7 +43,7 @@ void RecoWidget::onNextFrame() {
 void RecoWidget::onModelPredictionFinished() {
     modelTextEdit_m->clear();
 
-    for(const auto& i : predictionsFuture_m.result()) {
+    for(const auto& i : predictionsFuture_m->result()) {
         modelTextEdit_m->insertPlainText(i.className.c_str());
         modelTextEdit_m->insertPlainText("\n");
     }
@@ -50,7 +52,7 @@ void RecoWidget::onModelPredictionFinished() {
 }
 
 void RecoWidget::onQRDetectionFinished() {
-    QRTextEdit_m->setText(QRFuture_m.result().c_str());
+    QRTextEdit_m->setText(QRFuture_m->result().c_str());
 
     isQRDetectionRunning_m = false;
 }
@@ -93,13 +95,13 @@ QPixmap RecoWidget::matToPixmap(const cv::Mat& image) {
 }
 
 void RecoWidget::startModelPredictions() {
-    predictionsFuture_m.setFuture(QtConcurrent::run(&YOLOv8Model::getPredictions, model_m, currentFrame_m, 0.25, 0.45, 0.5));
+    predictionsFuture_m->setFuture(QtConcurrent::run(&YOLOv8Model::getPredictions, model_m, currentFrame_m, 0.25, 0.45, 0.5));
 
     isModelPredictionsRunning_m = true;
 }
 
 void RecoWidget::startQRDetection() {
-    QRFuture_m.setFuture(QtConcurrent::run(&cv::QRCodeDetector::detectAndDecode, &QRCodeDetector_m, currentFrame_m, cv::noArray(), cv::noArray()));
+    QRFuture_m->setFuture(QtConcurrent::run(&cv::QRCodeDetector::detectAndDecode, QRCodeDetector_m, currentFrame_m, cv::noArray(), cv::noArray()));
 
     isQRDetectionRunning_m = true;
 }

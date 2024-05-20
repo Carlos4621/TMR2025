@@ -42,7 +42,7 @@ private:
     QPushButton* recordButton_m{ nullptr };
     QPushButton* stopButton_m{ nullptr };
 
-    QFutureWatcher<QString> transcription_m;
+    QFutureWatcher<QString>* transcription_m;
 
     void setupLayout();
 };

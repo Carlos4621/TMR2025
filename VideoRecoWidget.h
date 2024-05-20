@@ -50,10 +50,10 @@ private:
     cv::Mat currentFrame_m;
 
     bool isModelPredictionsRunning_m{ false };
-    QFutureWatcher<std::vector<PredictionsData>> predictionsFuture_m;
+    QFutureWatcher<std::vector<PredictionsData>>* predictionsFuture_m{ nullptr };
 
     bool isQRDetectionRunning_m{ false };
-    QFutureWatcher<std::string> QRFuture_m;
+    QFutureWatcher<std::string>* QRFuture_m{ nullptr };
 
     void setupLayout();
 

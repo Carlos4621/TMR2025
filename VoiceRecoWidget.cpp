@@ -9,10 +9,11 @@ VoiceRecoWidget::VoiceRecoWidget(const QAudioDevice &device, const QAudioFormat 
     , voiceRecorder_m{ new My::VoiceRecorder{device, format, this} }
     , textEdit_m{ new QTextEdit{this} }
     , susurrador_m{ new Susurrador{voiceModelPath, this} }
+    , transcription_m{ new QFutureWatcher<QString>{this} }
 {
     connect(recordButton_m, &QPushButton::pressed, this, &VoiceRecoWidget::onRecordPressed);
     connect(stopButton_m, &QPushButton::pressed, this, &VoiceRecoWidget::onStopPressed);
-    connect(&transcription_m, &QFutureWatcher<QString>::finished, this, &VoiceRecoWidget::onAsyncFinish);
+    connect(transcription_m, &QFutureWatcher<QString>::finished, this, &VoiceRecoWidget::onAsyncFinish);
 
     setupLayout();
 }
@@ -31,7 +32,7 @@ void VoiceRecoWidget::onStopPressed() {
 
     voiceRecorder_m->stop();
 
-    transcription_m.setFuture(QtConcurrent::run(&Susurrador::voiceToString, susurrador_m, voiceRecorder_m->getBuffer().buffer()));
+    transcription_m->setFuture(QtConcurrent::run(&Susurrador::voiceToString, susurrador_m, voiceRecorder_m->getBuffer().buffer()));
 
     // Iniciar animación de carga
 }
@@ -39,7 +40,7 @@ void VoiceRecoWidget::onStopPressed() {
 void VoiceRecoWidget::onAsyncFinish() {
     recordButton_m->setEnabled(true);
 
-    textEdit_m->setText(transcription_m.result());
+    textEdit_m->setText(transcription_m->result());
 
     // Terminar animación de carga
 }
