@@ -1,13 +1,16 @@
 #include "YOLOv8Model.h"
 
-My::YOLOv8Model::YOLOv8Model(std::string_view modelPath, const cv::Size& modelInputSize, std::string_view classesTxtPath, const bool& cudaEnabled)
-    : modelInputSize_m{modelInputSize} {
-
+My::YOLOv8Model::YOLOv8Model(std::string_view modelPath, const cv::Size& modelInputSize, std::string_view classesTxtPath, const bool& cudaEnabled, QObject *parent)
+    : modelInputSize_m{modelInputSize}
+    , QObject{parent}
+{
     loadOnnxNetwork(modelPath, cudaEnabled);
     loadClasses(classesTxtPath);
 }
 
-My::YOLOv8Model::YOLOv8Model(const YOLOv8ModelParams &params) : YOLOv8Model{ params.modelPath, params.modelInputSize, params.classNamesPath, params.runWithCUDA } {
+My::YOLOv8Model::YOLOv8Model(const YOLOv8ModelParams &params, QObject *parent)
+    : YOLOv8Model{ params.modelPath, params.modelInputSize, params.classNamesPath, params.runWithCUDA, parent }
+{
 }
 
 std::vector<My::PredictionsData> My::YOLOv8Model::getPredictions(const cv::Mat &inputImage, const double& modelConfidenceThreshold, const double& modelScoreThreshold,

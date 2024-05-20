@@ -30,11 +30,13 @@ namespace My {
         /// @param modelInputShape Tamaño de las imágenes de entrada del modelo
         /// @param classNamesPath Ruta a los nombres de las classes dependiendo su ID
         /// @param runWithCuda Decidir si usar CUDA. Default = true
-        YOLOv8Model(std::string_view onnxModelPath, const cv::Size& modelInputShape, std::string_view classNamesPath, const bool& runWithCuda = true);
+        /// @param parent Padre del QObject
+        YOLOv8Model(std::string_view onnxModelPath, const cv::Size& modelInputShape, std::string_view classNamesPath, const bool& runWithCuda = true, QObject* parent = nullptr);
 
         /// @brief Constructor con paquete de parámetros
         /// @param params Paquete de parámetros del inferenciador
-        explicit YOLOv8Model(const YOLOv8ModelParams& params);
+        /// @param parent Padre del QObject
+        explicit YOLOv8Model(const YOLOv8ModelParams& params, QObject* parent = nullptr);
 
         YOLOv8Model(const YOLOv8Model&) = default;
         YOLOv8Model(YOLOv8Model&&) noexcept = default;

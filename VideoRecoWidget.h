@@ -28,7 +28,8 @@ public:
 private slots:
 
     void onNextFrame();
-    void onAsyncFinish();
+    void onModelPredictionFinished();
+    void onQRDetectionFinished();
 
 private:
 
@@ -46,18 +47,22 @@ private:
     QTimer* timer_m{ nullptr };
 
     cv::VideoCapture camera_m;
+    cv::Mat currentFrame_m;
 
-    bool isPredictionsRunning{ false };
+    bool isModelPredictionsRunning_m{ false };
+    QFutureWatcher<std::vector<PredictionsData>> predictionsFuture_m;
 
-    QFutureWatcher<std::vector<PredictionsData>> predictions_m;
+    bool isQRDetectionRunning_m{ false };
+    QFutureWatcher<std::string> QRFuture_m;
 
     void setupLayout();
 
     QPixmap matToPixmap(const cv::Mat&);
 
-    void processPredictions(const cv::Mat &frame);
+    void startModelPredictions();
+    void startQRDetection();
 };
 
 } // namespace My
 
-#endif // RECOWIDGET_H
+#endif // !RECOWIDGET_H
