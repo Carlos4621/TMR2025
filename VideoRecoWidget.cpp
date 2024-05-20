@@ -7,7 +7,7 @@ RecoWidget::RecoWidget(const uint8_t& cameraID, const YOLOv8ModelParams &modelPa
     , videoLabel_m{ new QLabel{this} }
     , QRTextEdit_m{ new QTextEdit{this} }
     , modelTextEdit_m{ new QTextEdit{this} }
-    , model_m{ modelParams }
+    , model_m{ new YOLOv8Model{modelParams} }
     , QRCheck_m{ new QCheckBox{ tr("Enable QR"), this} }
     , hazmatCheck_m{ new QCheckBox{ tr("Enable Hazmat"), this} }
     , timer_m{ new QTimer{this} }
@@ -16,6 +16,7 @@ RecoWidget::RecoWidget(const uint8_t& cameraID, const YOLOv8ModelParams &modelPa
     timer_m->setInterval(1000 / maxFPS);
 
     connect(timer_m, &QTimer::timeout, this, &RecoWidget::onNextFrame);
+    connect(&predictions_m, &QFutureWatcher<std::vector<PredictionsData>>::finished, this, &RecoWidget::onAsyncFinish);
 
     setupLayout();
 
@@ -27,15 +28,26 @@ void RecoWidget::onNextFrame() {
 
     camera_m >> frame;
 
-    videoLabel_m->setPixmap(matToPixmap(frame));
-
     if(QRCheck_m->isChecked()) {
         QRTextEdit_m->setText(QRCodeDetector_m.detectAndDecode(frame).c_str());
     }
 
-    if(hazmatCheck_m->isChecked()) {
-        displayPredictions(frame);
+    if(hazmatCheck_m->isChecked() && !isPredictionsRunning) {
+        processPredictions(frame);
     }
+
+    videoLabel_m->setPixmap(matToPixmap(frame));
+}
+
+void RecoWidget::onAsyncFinish() {
+    modelTextEdit_m->clear();
+
+    for(const auto& i : predictions_m.result()) {
+        modelTextEdit_m->insertPlainText(i.className.c_str());
+        modelTextEdit_m->insertPlainText("\n");
+    }
+
+    isPredictionsRunning = false;
 }
 
 void RecoWidget::setupLayout() {
@@ -75,16 +87,10 @@ QPixmap RecoWidget::matToPixmap(const cv::Mat& image) {
     return QPixmap::fromImage(qtImage);
 }
 
-// Posible paralelización
-void RecoWidget::displayPredictions(const cv::Mat& frame) {
-    const auto predictions{ std::move(model_m.getPredictions(frame)) };
+void RecoWidget::processPredictions(const cv::Mat& frame) {
+    predictions_m.setFuture(QtConcurrent::run(&YOLOv8Model::getPredictions, model_m, frame, 0.25, 0.45, 0.5));
 
-    modelTextEdit_m->clear();
-
-    for(const auto& i : predictions) {
-        modelTextEdit_m->insertPlainText(i.className.c_str());
-        modelTextEdit_m->insertPlainText("\n");
-    }
+    isPredictionsRunning = true;
 }
 
 } // namespace My

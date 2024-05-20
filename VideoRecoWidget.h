@@ -9,6 +9,7 @@
 #include <QLabel>
 #include <QTextEdit>
 #include <QGridLayout>
+#include <QtConcurrent>
 
 namespace My {
 
@@ -27,6 +28,7 @@ public:
 private slots:
 
     void onNextFrame();
+    void onAsyncFinish();
 
 private:
 
@@ -36,7 +38,7 @@ private:
     cv::QRCodeDetector QRCodeDetector_m;
 
     QTextEdit* modelTextEdit_m{ nullptr };
-    YOLOv8Model model_m;
+    YOLOv8Model* model_m{ nullptr };
 
     QCheckBox* QRCheck_m{ nullptr };
     QCheckBox* hazmatCheck_m{ nullptr };
@@ -45,11 +47,15 @@ private:
 
     cv::VideoCapture camera_m;
 
+    bool isPredictionsRunning{ false };
+
+    QFutureWatcher<std::vector<PredictionsData>> predictions_m;
+
     void setupLayout();
 
     QPixmap matToPixmap(const cv::Mat&);
 
-    void displayPredictions(const cv::Mat &frame);
+    void processPredictions(const cv::Mat &frame);
 };
 
 } // namespace My

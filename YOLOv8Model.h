@@ -8,6 +8,7 @@
 #include <string_view>
 #include <opencv2/opencv.hpp>
 #include "PredictionsData.h"
+#include <QObject>
 
 namespace My {
 
@@ -20,7 +21,8 @@ namespace My {
     };
     
     /// @brief Clase que permite el uso de modelos YOLOv8 exportados a .onnx
-    class YOLOv8Model {
+    class YOLOv8Model : public QObject {
+    Q_OBJECT
     public:
 
         /// @brief Constructor base
